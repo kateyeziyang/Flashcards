@@ -34,6 +34,8 @@ public class Flashcard {
 	 */
 	public static void main(String[] args) {
 		//loops main function until user exits.
+		System.out.println("This is a flashcard program for learning the conjugations of common Russian Verbs."
+				+ " Enter q or Q at any time to quit.");
 		while(showFlashcard()) {
 		}
 		System.out.println("Goodbye!");
@@ -141,7 +143,6 @@ public class Flashcard {
 		//input scanner goes here:
 		Scanner inputScanner = new Scanner(System.in);
 		String userInput = inputScanner.nextLine();
-		inputScanner.close();
 		if (userInput.contains("q") || userInput.contains("Q")) {
 			return false;
 		}
