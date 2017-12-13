@@ -10,24 +10,21 @@ public class GUIFlashcard extends JFrame {
 	private JButton submitBtn;
 	Flashcard flashcard = new Flashcard();
 	
-	//correctCounter.setEditable(false);
-	//incorrectCounter.setEditable(false);
-	
 	public GUIFlashcard() {
 		Container cpane = getContentPane();
-		cpane.setLayout(new FlowLayout(FlowLayout.CENTER, 40, 20));
+		cpane.setLayout(new BorderLayout());
 		promptText = new JLabel(Flashcard.getPrompt());
-		cpane.add(promptText);
+		cpane.add(promptText, BorderLayout.NORTH);
 		input = new JTextField();
-		cpane.add(input);
+		cpane.add(input, BorderLayout.CENTER);
 		correctCounter = new JTextField(flashcard.getCorrect() + " correct.");
 		correctCounter.setEditable(false);
-		cpane.add(correctCounter);
+		cpane.add(correctCounter, BorderLayout.EAST);
 		incorrectCounter = new JTextField(flashcard.getIncorrect() + " incorrect.");
 		incorrectCounter.setEditable(false);
-		cpane.add(incorrectCounter);
+		cpane.add(incorrectCounter, BorderLayout.WEST);
 		submitBtn = new JButton("Check");
-		cpane.add(submitBtn);
+		cpane.add(submitBtn, BorderLayout.SOUTH);
 		
 		submitBtn.addActionListener(new ActionListener() {
 	         @Override
@@ -36,7 +33,7 @@ public class GUIFlashcard extends JFrame {
 	    	     correctCounter.setText(flashcard.getCorrect() + " correct.");
 	    	     incorrectCounter.setText(flashcard.getIncorrect() + " incorrect.");
 	    	     flashcard.newWord();
-	    		 promptText.setText(Flashcard.getPrompt()); // Convert int to String
+	    		 promptText.setText(Flashcard.getPrompt());
 	         }
 	      });
 		
