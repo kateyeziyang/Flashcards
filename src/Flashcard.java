@@ -38,7 +38,7 @@ public class Flashcard {
 	/** */
 	private static String[] wordAnswer = new String[2];
 	
-	private static boolean isCorrect(String input) {
+	public static boolean isCorrect(String input) {
 		if (input.equals(wordAnswer[1])) {
 			correctCounter++;
 			return true;
@@ -103,6 +103,14 @@ public class Flashcard {
 		return isPlural;
 	}
 	
+	public static int getCorrect() {
+		return correctCounter;
+	}
+	
+	public static int getIncorrect() {
+		return incorrectCounter;
+	}
+	
 	private static String getLine(String filename, int lineNumber){
         String contentsFilePath;
         String[] dictionary;
@@ -135,6 +143,31 @@ public class Flashcard {
 		int lineNum = (int)(Math.random()*dictionary.length);
 		String ln = Integer.toString(lineNum + 1);
 		return new String[]{dictionary[lineNum], ln};
+	}
+	
+	public static String getPrompt() {
+		if (!isPlural) {
+			if (wordPerson == 1) {
+				return ("1st person singular of \"" + wordAnswer[0] + "\":");
+							}
+			if (wordPerson == 2) {
+				return ("2nd person singular of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 3) {
+				return ("3rd person singular of \"" + wordAnswer[0] + "\":");
+			}
+		} else {
+			if (wordPerson == 4) {
+				return ("1st person plural of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 5) {
+				return ("2nd person plural of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 6) {
+				return ("3rd person plural of \"" + wordAnswer[0] + "\":");
+			}
+		}
+		return null;
 	}
 	
 	public static void printPrompt() {
