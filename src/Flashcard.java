@@ -29,26 +29,97 @@ public class Flashcard {
 	private static final String verb3rdPerson = "russ 3.txt";
 	/** File with verbs in 3rd person plural. **/
 	private static final String verb3rdPersonPl = "russ 3pl.txt";
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		//loops main function until user exits.
-		System.out.println("This is a flashcard program for learning the conjugations of common Russian Verbs."
-				+ " Enter q or Q at any time to quit.");
-		while(showFlashcard()) {
+	
+	private static int correctCounter;
+	private static int incorrectCounter;
+	private static boolean isPlural;
+	private static int wordPerson;
+	
+	/** */
+	private static String[] wordAnswer = new String[2];
+	
+	private static boolean isCorrect(String input) {
+		if (input.equals(wordAnswer[1])) {
+			correctCounter++;
+			return true;
+		} else {
+			incorrectCounter++;
+			return false;
 		}
-		System.out.println("Goodbye!");
 	}
 	
-	/**
-	 * Returns a random line from a file specified in a 2 element array. 
-	 * The 2nd element is the line number in the file.
-	 * @param filename
-	 * @return Returns a random line and line number  from a file specified.
-	 */
-//TO DO
-	public static String[] getRandomLine(String filename){
+	public Flashcard() {
+		newWord();
+		correctCounter = 0;
+		incorrectCounter = 0;
+	}
+	
+	public static String[] getWordAnswer(){
+		return wordAnswer;
+	}
+	
+	public static void newWord() {
+		String[] wordAndLine = getRandomLine(verbs);
+		int line = Integer.valueOf(wordAndLine[1]);
+		wordAnswer[0] = wordAndLine[0];
+				
+		Random rand = new Random();
+		/* Choose random number between 1 and 6. 1 is 1st person, 2 is 2nd person,
+		 *  3 is third, 4 is 1st person plural. 5th is 2nd person plural, 6th is 3rd person plural. */
+		wordPerson = rand.nextInt(5) + 1;
+		if (wordPerson > 3 ) {
+			isPlural = true;
+		} else {
+			isPlural = false;
+		}
+		if (!isPlural) {
+			if (wordPerson == 1) {
+				wordAnswer[1] = getLine(verb1stPerson, line);
+			}
+			if (wordPerson == 2) {
+				wordAnswer[1] = getLine(verb2ndPerson, line);
+			}
+			if (wordPerson == 3) {
+				wordAnswer[1] = getLine(verb3rdPerson, line);
+			}
+		} else {
+			if (wordPerson == 4) {
+				wordAnswer[1] = getLine(verb1stPersonPl, line);
+			}
+			if (wordPerson == 5) {
+				wordAnswer[1] = getLine(verb2ndPersonPl, line);
+			}
+			if (wordPerson == 6) {
+				wordAnswer[1] = getLine(verb3rdPersonPl, line);
+			}
+		}
+	}
+	
+	public static int getPerson() {
+		return wordPerson;
+	}
+	
+	public static boolean getPlural() {
+		return isPlural;
+	}
+	
+	private static String getLine(String filename, int lineNumber){
+        String contentsFilePath;
+        String[] dictionary;
+		try {
+			contentsFilePath = Flashcard.class.getClassLoader().getResource(filename).getFile();
+			contentsFilePath = new URI(contentsFilePath).getPath();
+            File contentsFile = new File(contentsFilePath);
+            Scanner contentsScanner = new Scanner(contentsFile, "UTF-8");
+            dictionary = contentsScanner.useDelimiter("\\A").next().split("\\s+");
+            contentsScanner.close();
+		} catch (Exception e) {
+			throw new InvalidParameterException("Bad file path" + e);
+		}
+		return dictionary[lineNumber - 1];
+	}
+	
+	private static String[] getRandomLine(String filename){
         String contentsFilePath;
         String[] dictionary;
 		try {
@@ -66,93 +137,52 @@ public class Flashcard {
 		return new String[]{dictionary[lineNum], ln};
 	}
 	
-	/**
-	 * Returns a line from a file specified.
-	 * @param filename file to open
-	 * @param line line number to grab
-	 * @return Returns a random line from a file specified. Null if error.
-	 */
-//TO DO
-	public static String getLine(String filename, int lineNumber){
-        String contentsFilePath;
-        String[] dictionary;
-		try {
-			contentsFilePath = Flashcard.class.getClassLoader().getResource(filename).getFile();
-			contentsFilePath = new URI(contentsFilePath).getPath();
-            File contentsFile = new File(contentsFilePath);
-            Scanner contentsScanner = new Scanner(contentsFile, "UTF-8");
-            dictionary = contentsScanner.useDelimiter("\\A").next().split("\\s+");
-            contentsScanner.close();
-		} catch (Exception e) {
-			throw new InvalidParameterException("Bad file path" + e);
+	public static void printPrompt() {
+		if (!isPlural) {
+			if (wordPerson == 1) {
+				System.out.println("1st person singular of \"" + wordAnswer[0] + "\":");
+							}
+			if (wordPerson == 2) {
+				System.out.println("2nd person singular of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 3) {
+				System.out.println("3rd person singular of \"" + wordAnswer[0] + "\":");
+			}
+		} else {
+			if (wordPerson == 4) {
+				System.out.println("1st person plural of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 5) {
+				System.out.println("2nd person plural of \"" + wordAnswer[0] + "\":");
+			}
+			if (wordPerson == 6) {
+				System.out.println("3rd person plural of \"" + wordAnswer[0] + "\":");
+			}
 		}
-		return dictionary[lineNumber - 1];
 	}
 	
 	/**
-	 * This is the main driver function. It should return false if the user quits or there is an error 
-	 * (file not found).
-	 * @return true if not error or user quit.
+	 * @param args
 	 */
-//TO DO - input scanner part.
-	public static boolean showFlashcard() {
-		//word to quiz on
-		String[] wordAndLine = getRandomLine(verbs);
-		String word = wordAndLine[0];
-		String correctAnswer = word;
-		int line = Integer.valueOf(wordAndLine[1]);
-		boolean plural;
-		Random rand = new Random();
-		/* Choose random number between 1 and 6. 1 is 1st person, 2 is 2nd person,
-		 *  3 is third, 4 is 1st person plural. 5th is 2nd person plural, 6th is 3rd person plural. */
-		int person = rand.nextInt(5) + 1;
-		if (person > 3 ) {
-			plural = true;
-		} else {
-			plural = false;
-		}
-		
-		//Prompt
-		if (!plural) {
-			if (person == 1) {
-				System.out.println("1st person singular of \"" + word + "\":");
-				correctAnswer = getLine(verb1stPerson, line);
-			}
-			if (person == 2) {
-				System.out.println("2nd person singular of \"" + word + "\":");
-				correctAnswer = getLine(verb2ndPerson, line);
-			}
-			if (person == 3) {
-				System.out.println("3rd person singular of \"" + word + "\":");
-				correctAnswer = getLine(verb3rdPerson, line);
-			}
-		} else {
-			if (person == 4) {
-				System.out.println("1st person plural of \"" + word + "\":");
-				correctAnswer = getLine(verb1stPersonPl, line);
-			}
-			if (person == 5) {
-				System.out.println("2nd person plural of \"" + word + "\":");
-				correctAnswer = getLine(verb2ndPersonPl, line);
-			}
-			if (person == 6) {
-				System.out.println("3rd person plural of \"" + word + "\":");
-				correctAnswer = getLine(verb3rdPersonPl, line);
-			}
-		}
-		//input scanner goes here:
+	public static void main(String[] args) {
+		//loops main function until user exits.
+		System.out.println("This is a flashcard program for learning the conjugations of common Russian Verbs."
+				+ " Enter q or Q at any time to quit.");
 		Scanner inputScanner = new Scanner(System.in);
-		String userInput = inputScanner.nextLine();
-		if (userInput.contains("q") || userInput.contains("Q")) {
-			return false;
-		}
-		if (correctAnswer.equals(userInput)) {
-			System.out.println("Correct!");
-		} else {
-			System.out.println("Incorrect.");
-		}
-		return true;
+		String userInput = "";
+		do {
+			newWord();
+			printPrompt();
+			userInput = inputScanner.nextLine();
+			if (isCorrect(userInput)) {
+				System.out.println("Correct!");
+			} else {
+				System.out.println("Incorrect.");
+			}
+		} while (!userInput.contains("q") || userInput.contains("Q"));
+			
+		System.out.println("Goodbye!");
+		inputScanner.close();
 	}
-	
 }
-
+	
